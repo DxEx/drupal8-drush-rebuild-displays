@@ -20,17 +20,23 @@ function d8_rebuild_displays_drush_command() {
 function drush_rebuild_displays() {
 
   // Loop through all entity types.
-  foreach (\Drupal::entityTypeManager()->getDefinitions() as $entity_type_id => $entity_type_definition) {
+  $entity_types = \Drupal::entityTypeManager()->getDefinitions();
+  ksort($entity_types);
+  foreach ($entity_types as $entity_type_id => $entity_type_definition) {
 
     // Loop through all bundles.
-    foreach (entity_get_bundles($entity_type_id) as $bundle => $bundle_definition) {
+    $entity_bundles = entity_get_bundles($entity_type_id);
+    ksort($entity_bundles);
+    foreach ($entity_bundles as $bundle => $bundle_definition) {
 
       // Get the displays.
       $entity_display_repository = \Drupal::service('entity_display.repository');
       $view_modes = $entity_display_repository->getViewModes($entity_type_id);
       $view_modes['default'] = ['status' => TRUE];
+      ksort($view_modes);
       $form_modes = $entity_display_repository->getFormModes($entity_type_id);
       $form_modes['default'] = ['status' => TRUE];
+      ksort($form_modes);
 
       // Update view modes.
       foreach ($view_modes as $view_mode_id => $view_mode) {
